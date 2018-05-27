@@ -12,10 +12,10 @@ namespace Remote_Desktop
         static void Main(string[] args)
         {
             var prog = new Program();
-            const string userName = "";
-            const string password = "";
-            const string ipAddress = "";
-            const string command = "notepad";
+            string userName = args[1];
+            string password = args[2];
+            string ipAddress = args[0];
+            string command = args[3];
             try
             {
                 var connection = new ConnectionOptions();
