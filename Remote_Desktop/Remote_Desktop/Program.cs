@@ -18,13 +18,16 @@ namespace Remote_Desktop
                 connection.Password = "";
 
                 var wmiScope = new ManagementScope(String.Format("\\\\{0}\\root\\cimv2", "IP_Address"), connection);
-                //wmiScope.Connect();
+                
                 var wmiProcess = new ManagementClass(wmiScope, new ManagementPath("Win32_Process"), new ObjectGetOptions());
-                // arguments for the method  
-                object[] methodArgs = { "notepad", null, null, 0 };
 
-                //Execute the method 
+                //to open a program on the terminal session we need to schedule a task, then run it 
+                //task creation
+                object[] methodArgs = { "SchTasks /Create /SC DAILY /TN MyTest /TR notepad /ST 09:00", null, null, 0 };
                 object result = wmiProcess.InvokeMethod("Create", methodArgs);
+                //task runner
+                methodArgs[0] = "schtasks /Run /TN MyTest";
+                result = wmiProcess.InvokeMethod("Create", methodArgs);
             }
             catch (Exception e)
             {
