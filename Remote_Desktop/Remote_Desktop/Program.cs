@@ -13,7 +13,9 @@ namespace Remote_Desktop
         {
             try
             {
-                
+                var connection = new ConnectionOptions();
+                connection.Username = "";
+                connection.Password = "";
             }
             catch (Exception e)
             {
