@@ -12,14 +12,18 @@ namespace Remote_Desktop
         static void Main(string[] args)
         {
             var prog = new Program();
+            const string userName = "";
+            const string password = "";
+            const string ipAddress = "";
+            const string command = "notepad";
             try
             {
                 var connection = new ConnectionOptions();
-                connection.Username = "";
-                connection.Password = "";
-                var wmiScope = new ManagementScope(String.Format("\\\\{0}\\root\\cimv2", "IP_Address"), connection);
+                connection.Username = userName;
+                connection.Password = password;
+                var wmiScope = new ManagementScope(String.Format("\\\\{0}\\root\\cimv2", ipAddress), connection);
                 var wmiProcess = new ManagementClass(wmiScope, new ManagementPath("Win32_Process"), new ObjectGetOptions());
-                prog.OpenProgramOnTerminalSession(wmiProcess, "notepad");
+                prog.OpenProgramOnTerminalSession(wmiProcess, command);
             }
             catch (Exception e)
             {
@@ -33,10 +37,13 @@ namespace Remote_Desktop
             //to open a program on the terminal session we need to schedule a task, then run it 
             //task creation
             object[] methodArgs = { "SchTasks /Create /SC DAILY /TN MyTest /TR " + command + " /ST 09:00", null, null, 0 };
-            object result = wmiProcess.InvokeMethod("Create", methodArgs);
+            wmiProcess.InvokeMethod("Create", methodArgs);
             //task runner
             methodArgs[0] = "schtasks /Run /TN MyTest";
-            result = wmiProcess.InvokeMethod("Create", methodArgs);
+            wmiProcess.InvokeMethod("Create", methodArgs);
+            //delete the task
+            methodArgs[0] = "schtasks /Delete /tn MyTest /f";
+            wmiProcess.InvokeMethod("Create", methodArgs);
         }
     }
 }
