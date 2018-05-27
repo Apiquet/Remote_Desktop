@@ -12,23 +12,31 @@ namespace Remote_Desktop
         static void Main(string[] args)
         {
             var prog = new Program();
-            string userName = args[1];
-            string password = args[2];
-            string ipAddress = args[0];
-            string command = args[3];
-            try
+            if (args[0] == "help")
             {
-                var connection = new ConnectionOptions();
-                connection.Username = userName;
-                connection.Password = password;
-                var wmiScope = new ManagementScope(String.Format("\\\\{0}\\root\\cimv2", ipAddress), connection);
-                var wmiProcess = new ManagementClass(wmiScope, new ManagementPath("Win32_Process"), new ObjectGetOptions());
-                prog.OpenProgramOnTerminalSession(wmiProcess, command);
+                Console.WriteLine("How to run the a command on a remote desktop:");
+                Console.WriteLine("Remote_Desktop.exe IP_Address UserName Password Command");
             }
-            catch (Exception e)
+            else
             {
-                Console.WriteLine(e);
-                throw;
+                string userName = args[1];
+                string password = args[2];
+                string ipAddress = args[0];
+                string command = args[3];
+                try
+                {
+                    var connection = new ConnectionOptions();
+                    connection.Username = userName;
+                    connection.Password = password;
+                    var wmiScope = new ManagementScope(String.Format("\\\\{0}\\root\\cimv2", ipAddress), connection);
+                    var wmiProcess = new ManagementClass(wmiScope, new ManagementPath("Win32_Process"), new ObjectGetOptions());
+                    prog.OpenProgramOnTerminalSession(wmiProcess, command);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
             }
         }
 
